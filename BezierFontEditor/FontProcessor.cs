@@ -12,17 +12,13 @@ namespace BezierFontEditor
     {
         public BezierFont LoadFont(string path)
         {
-            using (FileStream fs = File.OpenRead(path))
+            string[] lines = File.ReadAllLines(path);
+            StringBuilder sb = new StringBuilder();
+            foreach(string line in lines)
             {
-                byte[] b = new byte[1024];
-                UTF8Encoding temp = new UTF8Encoding(true);
-                StringBuilder sb = new StringBuilder();
-                while (fs.Read(b, 0, b.Length) > 0)
-                {
-                    sb.Append(temp.GetString(b));
-                }
-                return JsonConvert.DeserializeObject<BezierFont>(sb.ToString());
+                sb.Append(line);
             }
+            return JsonConvert.DeserializeObject<BezierFont>(sb.ToString());
         }
 
         public void SaveFont(string path, BezierFont font)

@@ -57,7 +57,7 @@ namespace BezierFontEditor
             _disableCallbacks = true;
             try
             {
-                AddLetterButton.Enabled = _currentChar.Length == 1;
+                AddLetterButton.Enabled = !_font.Letters.ContainsKey("New letter");
                 LetterTextBox.Text = _currentChar;
                 RemoveLetterButton.Enabled = _font.Letters.Count > 1;
                 int indexBefore = LetterComboBox.SelectedIndex;
@@ -69,11 +69,12 @@ namespace BezierFontEditor
                 int vMax = (int)Math.Ceiling(image.Height * zoom / 100f);
                 VScrollBar.Value = vMax < VScrollBar.Value ? vMax : VScrollBar.Value;
                 VScrollBar.Maximum = vMax;
-                VScrollBar.Enabled = vMax != 0;
+                VScrollBar.Enabled = image == _backImage;
                 int hMax = (int)Math.Ceiling(image.Width * zoom / 100f);
                 HScrollBar.Value = hMax < HScrollBar.Value ? hMax : HScrollBar.Value;
                 HScrollBar.Maximum = hMax;
-                HScrollBar.Enabled = hMax != 0;
+                HScrollBar.Enabled = image == _backImage;
+                BaselineUpDown.Value = CurrentLetter.Baseline;
             } finally
             {
                 _disableCallbacks = false;
@@ -132,11 +133,15 @@ namespace BezierFontEditor
         {
             if (_disableCallbacks) return;
             string toAdd = "New letter";
-            _font.Letters.Add(toAdd, new BezierLetter());
+            var letter = new BezierLetter
+            {
+                Baseline = (int)BaselineUpDown.Value
+            };
+            _font.Letters.Add(toAdd, letter);
             _currentChar = toAdd;
             UpdateFormElements();
             LetterComboBox.SelectedItem = _currentChar;
-            RenderLetter();
+            RenderLetter(); 
         }
 
         private void RemoveLetterButton_Click(object sender, EventArgs e)
@@ -192,7 +197,8 @@ namespace BezierFontEditor
         private void BaselineUpDown_ValueChanged(object sender, EventArgs e)
         {
             if (_disableCallbacks) return;
-            Console.WriteLine(BaselineUpDown.Value);
+            CurrentLetter.Baseline = (int) BaselineUpDown.Value;
+            UpdateFormElements();
             RenderLetter();
         }
 

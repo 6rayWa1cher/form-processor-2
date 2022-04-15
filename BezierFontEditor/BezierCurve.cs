@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,12 +9,16 @@ using System.Threading.Tasks;
 
 namespace BezierFontEditor
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class BezierCurve
     {
+        [JsonProperty]
         public PointF Start { get; set; }
 
+        [JsonProperty]
         public PointF Middle { get; set; }
 
+        [JsonProperty]
         public PointF End { get; set; }
 
         public IList<PointF> Points => new List<PointF>(new PointF[] { Start, Middle, End });
