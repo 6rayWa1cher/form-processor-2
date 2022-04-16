@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Text;
 using System.Linq;
 using System.Windows.Forms;
+using BezierFontEditor;
 
 namespace FormProcessor
 {
@@ -13,9 +14,11 @@ namespace FormProcessor
     {
         private readonly FormData _formData = new FormData();
         private Image _image;
+        private BezierFont _bezierFont;
+        private readonly FontProcessor _fontProcessor = new FontProcessor();
 
-        private readonly Color blackColor = Color.FromArgb(0, 0, 0);
-        private readonly Color whiteColor = Color.FromArgb(255, 255, 255);
+        private readonly Color _blackColor = Color.FromArgb(0, 0, 0);
+        private readonly Color _whiteColor = Color.FromArgb(255, 255, 255);
         public Form1()
         {
             InitializeComponent();
@@ -27,12 +30,26 @@ namespace FormProcessor
             _formData.Fields.Add(new AnchorFormElement(new PointF(210 - 2, 18), 16));
             _formData.Fields.Add(new AnchorFormElement(new PointF(18, 297 - 2), 16));
             _formData.Fields.Add(new AnchorFormElement(new PointF(210 - 2, 297 - 2), 16));
-            _formData.Fields.Add(new TextFormElement(new PointF(15, 30), "Exampletext", 16));
+            _formData.Fields.Add(new TextFormElement(new PointF(15, 30), "Name", 16));
             _formData.Fields.Add(new TextInputFormElement(new PointF(65, 30), 10));
             TransformButton.Enabled = false;
+            FillButton.Enabled = false;
+            FindAnchorsButton.Enabled = false;
+            OpenFontDialog.Filter =
+                "JSON files (*.json)|*.json|All files (*.*)|*.*";
+            OpenFontDialog.DefaultExt = "json";
         }
 
         private void DpiButton_Click(object sender, EventArgs e)
+        {
+            Image image = GenerateForm();
+            UpdateImage(image);
+            TransformButton.Enabled = true;
+            FillButton.Enabled = true;
+            FindAnchorsButton.Enabled = true;
+        }
+
+        private Image GenerateForm()
         {
             int dpi = (int)DpiUpDown.Value;
             Size size = _formData.GetPxSize(dpi);
@@ -41,9 +58,7 @@ namespace FormProcessor
             {
                 _formData.Draw(gr, dpi);
             }
-            UpdateImage(image);
-            TransformButton.Enabled = true;
-            FindAnchorsButton.Enabled = false;
+            return image;
         }
 
         private void TransformButton_Click(object sender, EventArgs e)
@@ -56,6 +71,7 @@ namespace FormProcessor
             UpdateImage(rotated);
             TransformButton.Enabled = false;
             FindAnchorsButton.Enabled = true;
+            FillButton.Enabled = false;
         }
         private void FindAnchorsButton_Click(object sender, EventArgs e)
         {
@@ -129,7 +145,7 @@ namespace FormProcessor
                 {
                     Color color = image.GetPixel(x, y);
                     int intensity = GetIntensity(color);
-                    Color newColor = intensity < 128 ? blackColor : whiteColor;
+                    Color newColor = intensity < 128 ? _blackColor : _whiteColor;
                     image.SetPixel(x, y, newColor);
                 }
             }
@@ -181,7 +197,7 @@ namespace FormProcessor
                         if (visited[i, j]) continue;
                         visited[i, j] = true;
                         Color color = img.GetPixel(i, j);
-                        if (color == blackColor)
+                        if (color == _blackColor)
                         {
                             TracedObject points = TraceObject(img, new Point(i, j), visited);
                             TracedObject shiftedPoints = 
@@ -207,30 +223,26 @@ namespace FormProcessor
                 int px = p.X, py = p.Y;
                 var neighbors = new Point[]
                 {
-                    new Point(px - 1, py - 1),
                     new Point(px - 1, py),
-                    new Point(px - 1, py + 1),
                     new Point(px, py - 1),
                     new Point(px, py + 1),
-                    new Point(px + 1, py - 1),
                     new Point(px + 1, py),
-                    new Point(px + 1, py + 1)
                 };
                 bool border = false;
                 foreach (Point neighbor in neighbors)
                 {
                     int nx = neighbor.X, ny = neighbor.Y;
-                    if (visited[nx, ny]) continue;
-                    visited[nx, ny] = true;
                     Color neighborColor = img.GetPixel(nx, ny);
-                    if (neighborColor == blackColor)
+                    if (neighborColor == _blackColor)
                     {
+                        if (visited[nx, ny]) continue;
                         queue.Enqueue(neighbor);
                     }
                     else
                     {
                         border = true;
                     }
+                    visited[nx, ny] = true;
                 }
                 points.Add((p, border));
             }
@@ -276,6 +288,46 @@ namespace FormProcessor
         {
             float pi = (float)Math.PI;
             return GetRatio(2 * pi, pi);
+        }
+
+        private void FillButton_Click(object sender, EventArgs e)
+        {
+            TextInputFormElement element = (TextInputFormElement)_formData.Fields[5];
+            Image image = GenerateForm();
+            FillTextValue(image, element, "шлепа");
+            UpdateImage(image);
+
+        }
+
+        private void OpenFontButton_Click(object sender, EventArgs e)
+        {
+            OpenFontDialog.ShowDialog();
+        }
+
+        private void OpenFontDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _bezierFont = _fontProcessor.LoadFont(OpenFontDialog.FileName);
+        }
+
+        private void FillTextValue(Image image, TextInputFormElement element, string text)
+        {
+            if (_bezierFont != null) {
+                using (Graphics gr = Graphics.FromImage(image))
+                {
+                    int dpi = (int)DpiUpDown.Value;
+                    PointF elementPos = DrawUtils.MmToPx(element.MmPosition, dpi);
+                    float height = DrawUtils.MmToPx(10, dpi);
+                    gr.DrawLine(Pens.Green, elementPos.X, elementPos.Y, elementPos.X, elementPos.Y + height);
+                    float cellWidth = DrawUtils.MmToPx(10, dpi);
+                    var pen = new Pen(Color.Black, 2);
+                    string[] splitted = FontUtils.SplitIntoTextElements(text);
+                    for (int i = 0; i < text.Length; i++)
+                    {
+                        int x = (int) Math.Ceiling(elementPos.X + i * cellWidth);
+                        _bezierFont.Draw(gr, new Point(x, (int)elementPos.Y), height, pen, splitted[i]);
+                    }
+                }
+            }
         }
     }
 
@@ -390,11 +442,22 @@ namespace FormProcessor
 
         public string FontFamily { get; set; } = "Arial";
 
+        public BezierFont BezierFont { get; set; }
+
         public override void Draw(DrawContext ctx)
         {
-            float fontSize = DrawUtils.PtToPx(Size, ctx.Dpi);
-            var drawFont = new Font(FontFamily, fontSize);
-            ctx.Graphics.DrawString(Text, drawFont, Brushes.Black, DrawUtils.MmToPx(MmPosition, ctx.Dpi));
+            PointF position = DrawUtils.MmToPx(MmPosition, ctx.Dpi);
+            if (BezierFont == null)
+            {
+                float fontSize = DrawUtils.PtToPx(Size, ctx.Dpi);
+                var drawFont = new Font(FontFamily, fontSize);
+                ctx.Graphics.DrawString(Text, drawFont, Brushes.Black, position);
+            } else
+            {
+                Pen pen = new Pen(Color.Black, 1);
+                BezierFont.Draw(ctx.Graphics, new Point((int)position.X, (int)position.Y), DrawUtils.MmToPx(Size, ctx.Dpi), pen, Text);
+                //ctx.Graphics.FillEllipse(Brushes.Blue, position.X - 5, position.Y - 5, 10, 10);
+            }
         }
 
         public TextFormElement()
@@ -542,7 +605,7 @@ namespace FormProcessor
 
     public class FormData
     {
-        public ISet<FormElement> Fields { get; set; } = new HashSet<FormElement>();
+        public IList<FormElement> Fields { get; set; } = new List<FormElement>();
 
         public SizeF MmSize { get; set; } = new SizeF(210, 297);
 

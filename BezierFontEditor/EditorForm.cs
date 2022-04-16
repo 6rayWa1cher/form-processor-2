@@ -22,14 +22,13 @@ namespace BezierFontEditor
         private (int curveIndex, int pointIndex) _indx = (-1, -1);
         private bool _disableCallbacks = false;
         private FontProcessor _fontProcessor = new FontProcessor();
-        public readonly Size _borders = new Size(250, 350);
         public EditorForm()
         {
             InitializeComponent();
-            _font.Borders = _borders;
             _font.Letters.Add(_currentChar, new BezierLetter());
             _windowSize = FormImageBox.Size;
-            _renderWindow = new Rectangle((_windowSize.Width - _borders.Width) / 2, (_windowSize.Height - _borders.Height) / 2, _borders.Width, _borders.Height);
+            _font.Borders = new Rectangle((_windowSize.Width - 250) / 2, (_windowSize.Height - 350) / 2, 250, 350);
+            _renderWindow = _font.Borders;
         }
 
         private void EditorForm_Load(object sender, EventArgs e)

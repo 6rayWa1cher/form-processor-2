@@ -34,6 +34,9 @@
             this.FormImageBox = new System.Windows.Forms.PictureBox();
             this.TransformButton = new System.Windows.Forms.Button();
             this.FindAnchorsButton = new System.Windows.Forms.Button();
+            this.FillButton = new System.Windows.Forms.Button();
+            this.OpenFontButton = new System.Windows.Forms.Button();
+            this.OpenFontDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.DpiUpDown)).BeginInit();
             this.FormImagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FormImageBox)).BeginInit();
@@ -97,7 +100,7 @@
             // TransformButton
             // 
             this.TransformButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TransformButton.Location = new System.Drawing.Point(713, 67);
+            this.TransformButton.Location = new System.Drawing.Point(713, 96);
             this.TransformButton.Name = "TransformButton";
             this.TransformButton.Size = new System.Drawing.Size(75, 23);
             this.TransformButton.TabIndex = 4;
@@ -108,7 +111,7 @@
             // FindAnchorsButton
             // 
             this.FindAnchorsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FindAnchorsButton.Location = new System.Drawing.Point(713, 96);
+            this.FindAnchorsButton.Location = new System.Drawing.Point(713, 125);
             this.FindAnchorsButton.Name = "FindAnchorsButton";
             this.FindAnchorsButton.Size = new System.Drawing.Size(75, 23);
             this.FindAnchorsButton.TabIndex = 5;
@@ -116,11 +119,42 @@
             this.FindAnchorsButton.UseVisualStyleBackColor = true;
             this.FindAnchorsButton.Click += new System.EventHandler(this.FindAnchorsButton_Click);
             // 
+            // FillButton
+            // 
+            this.FillButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.FillButton.Location = new System.Drawing.Point(713, 67);
+            this.FillButton.Name = "FillButton";
+            this.FillButton.Size = new System.Drawing.Size(75, 23);
+            this.FillButton.TabIndex = 6;
+            this.FillButton.Text = "Fill";
+            this.FillButton.UseVisualStyleBackColor = true;
+            this.FillButton.Click += new System.EventHandler(this.FillButton_Click);
+            // 
+            // OpenFontButton
+            // 
+            this.OpenFontButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OpenFontButton.Location = new System.Drawing.Point(713, 415);
+            this.OpenFontButton.Name = "OpenFontButton";
+            this.OpenFontButton.Size = new System.Drawing.Size(75, 23);
+            this.OpenFontButton.TabIndex = 7;
+            this.OpenFontButton.Text = "Open font";
+            this.OpenFontButton.UseVisualStyleBackColor = true;
+            this.OpenFontButton.Click += new System.EventHandler(this.OpenFontButton_Click);
+            // 
+            // OpenFontDialog
+            // 
+            this.OpenFontDialog.DefaultExt = "json";
+            this.OpenFontDialog.FileName = "myfont.json";
+            this.OpenFontDialog.Title = "Open font file";
+            this.OpenFontDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.OpenFontDialog_FileOk);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.OpenFontButton);
+            this.Controls.Add(this.FillButton);
             this.Controls.Add(this.FindAnchorsButton);
             this.Controls.Add(this.TransformButton);
             this.Controls.Add(this.FormImagePanel);
@@ -144,6 +178,9 @@
         private System.Windows.Forms.PictureBox FormImageBox;
         private System.Windows.Forms.Button TransformButton;
         private System.Windows.Forms.Button FindAnchorsButton;
+        private System.Windows.Forms.Button FillButton;
+        private System.Windows.Forms.Button OpenFontButton;
+        private System.Windows.Forms.OpenFileDialog OpenFontDialog;
     }
 }
 
