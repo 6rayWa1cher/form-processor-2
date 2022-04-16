@@ -83,23 +83,25 @@ namespace BezierFontEditor
 
         private void RenderLetter()
         {
-            Graphics gr = Graphics.FromImage(FormImageBox.Image);
-            gr.Clear(Color.FromKnownColor(KnownColor.Control));
-            if (_backImage != null)
+            using (Graphics gr = Graphics.FromImage(FormImageBox.Image))
             {
-                float zoom = (float)ZoomUpDown.Value;
-                gr.DrawImage(_backImage, -HScrollBar.Value, -VScrollBar.Value, _backImage.Width * zoom / 100f, _backImage.Height * zoom / 100f);
-            } 
-            if (ShowControlsCheckbox.Checked)
-                foreach (BezierCurve curve in CurrentLetter.Curves)
-                    gr.DrawLines(Pens.Aqua, curve.Points.ToArray());
-            CurrentLetter.Draw(gr, Pens.Red);
-            gr.DrawRectangle(Pens.Gray, _renderWindow);
-            gr.DrawLine(Pens.Green, 0, (int)BaselineUpDown.Value, FormImageBox.Width, (int)BaselineUpDown.Value);
-            if (ShowControlsCheckbox.Checked)
-                foreach (BezierCurve curve in CurrentLetter.Curves)
-                    foreach (PointF point in curve.Points)
-                        PaintControl(gr, new Point((int)point.X, (int)point.Y));
+                gr.Clear(Color.FromKnownColor(KnownColor.Control));
+                if (_backImage != null)
+                {
+                    float zoom = (float)ZoomUpDown.Value;
+                    gr.DrawImage(_backImage, -HScrollBar.Value, -VScrollBar.Value, _backImage.Width * zoom / 100f, _backImage.Height * zoom / 100f);
+                }
+                if (ShowControlsCheckbox.Checked)
+                    foreach (BezierCurve curve in CurrentLetter.Curves)
+                        gr.DrawLines(Pens.Aqua, curve.Points.ToArray());
+                CurrentLetter.Draw(gr, Pens.Red);
+                gr.DrawRectangle(Pens.Gray, _renderWindow);
+                gr.DrawLine(Pens.Green, 0, (int)BaselineUpDown.Value, FormImageBox.Width, (int)BaselineUpDown.Value);
+                if (ShowControlsCheckbox.Checked)
+                    foreach (BezierCurve curve in CurrentLetter.Curves)
+                        foreach (PointF point in curve.Points)
+                            PaintControl(gr, new Point((int)point.X, (int)point.Y));
+            }
             FormImageBox.Refresh();
         }
 

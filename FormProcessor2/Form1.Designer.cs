@@ -32,6 +32,8 @@
             this.DpiButton = new System.Windows.Forms.Button();
             this.FormImagePanel = new System.Windows.Forms.Panel();
             this.FormImageBox = new System.Windows.Forms.PictureBox();
+            this.TransformButton = new System.Windows.Forms.Button();
+            this.FindAnchorsButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DpiUpDown)).BeginInit();
             this.FormImagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FormImageBox)).BeginInit();
@@ -92,11 +94,35 @@
             this.FormImageBox.TabIndex = 3;
             this.FormImageBox.TabStop = false;
             // 
+            // TransformButton
+            // 
+            this.TransformButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TransformButton.Location = new System.Drawing.Point(713, 67);
+            this.TransformButton.Name = "TransformButton";
+            this.TransformButton.Size = new System.Drawing.Size(75, 23);
+            this.TransformButton.TabIndex = 4;
+            this.TransformButton.Text = "Transform";
+            this.TransformButton.UseVisualStyleBackColor = true;
+            this.TransformButton.Click += new System.EventHandler(this.TransformButton_Click);
+            // 
+            // FindAnchorsButton
+            // 
+            this.FindAnchorsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.FindAnchorsButton.Location = new System.Drawing.Point(713, 96);
+            this.FindAnchorsButton.Name = "FindAnchorsButton";
+            this.FindAnchorsButton.Size = new System.Drawing.Size(75, 23);
+            this.FindAnchorsButton.TabIndex = 5;
+            this.FindAnchorsButton.Text = "Find";
+            this.FindAnchorsButton.UseVisualStyleBackColor = true;
+            this.FindAnchorsButton.Click += new System.EventHandler(this.FindAnchorsButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.FindAnchorsButton);
+            this.Controls.Add(this.TransformButton);
             this.Controls.Add(this.FormImagePanel);
             this.Controls.Add(this.DpiButton);
             this.Controls.Add(this.DpiUpDown);
@@ -116,6 +142,8 @@
         private System.Windows.Forms.Button DpiButton;
         private System.Windows.Forms.Panel FormImagePanel;
         private System.Windows.Forms.PictureBox FormImageBox;
+        private System.Windows.Forms.Button TransformButton;
+        private System.Windows.Forms.Button FindAnchorsButton;
     }
 }
 
